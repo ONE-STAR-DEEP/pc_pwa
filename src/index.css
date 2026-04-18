@@ -122,7 +122,6 @@
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
-  border-inline: 1px solid var(--border);
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -227,7 +226,7 @@ code {
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.432 0.095 166.913);
+  --primary: #006045;
   --primary-foreground: oklch(0.979 0.021 166.113);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
@@ -239,7 +238,7 @@ code {
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.845 0.143 164.978);
+  --chart-1: #5ee9b5;
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.596 0.145 163.225);
   --chart-4: oklch(0.508 0.118 165.612);
@@ -261,3 +260,83 @@ code {
     @apply bg-background text-foreground;}
   html {
     @apply font-sans;}}
+
+
+    .loader {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .jimu-primary-loading:before,
+  .jimu-primary-loading:after {
+    position: absolute;
+    top: 0;
+    content: '';
+  }
+
+  .jimu-primary-loading:before {
+    left: -19.992px;
+  }
+
+  .jimu-primary-loading:after {
+    left: 19.992px;
+    -webkit-animation-delay: 0.32s !important;
+    animation-delay: 0.32s !important;
+  }
+
+  .jimu-primary-loading:before,
+  .jimu-primary-loading:after,
+  .jimu-primary-loading {
+    background: #006045;
+    -webkit-animation: loading-keys-app-loading 0.8s infinite ease-in-out;
+    animation: loading-keys-app-loading 0.8s infinite ease-in-out;
+    width: 13.6px;
+    height: 32px;
+  }
+
+  .jimu-primary-loading {
+    text-indent: -9999em;
+    margin: auto;
+    position: absolute;
+    right: calc(50% - 6.8px);
+    top: calc(50% - 16px);
+    -webkit-animation-delay: 0.16s !important;
+    animation-delay: 0.16s !important;
+  }
+
+  @-webkit-keyframes loading-keys-app-loading {
+
+    0%,
+    80%,
+    100% {
+      opacity: .75;
+      box-shadow: 0 0 #006045;
+      height: 32px;
+    }
+
+    40% {
+      opacity: 1;
+      box-shadow: 0 -8px #006045;
+      height: 40px;
+    }
+  }
+
+  @keyframes loading-keys-app-loading {
+
+    0%,
+    80%,
+    100% {
+      opacity: .75;
+      box-shadow: 0 0 #006045;
+      height: 32px;
+    }
+
+    40% {
+      opacity: 1;
+      box-shadow: 0 -8px #006045;
+      height: 40px;
+    }
+  }

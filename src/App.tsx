@@ -1,121 +1,161 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { PenLine, RefreshCcw } from 'lucide-react'
+import { DataTable } from './components/Datatable'
+import { columns } from './components/TableColumns'
+import { Button } from './components/ui/button'
+import type { Invoice } from './lib/types/DataTypes'
+import { useState, useEffect } from 'react'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
+import Discrepancy from './pages/discrepancy'
 
-function App() {
-  const [count, setCount] = useState(0)
+import {
+  Field,
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+
+function Home() {
+  const [data, setData] = useState<Invoice[]>([])
+  const [open, setOpen] = useState(false)
+  const [msg, setMsg] = useState("")
+  const [Vno, setVno] = useState("")
+
+  const fetchNewInvoices = async () => {
+    try {
+      const res = await fetch(`http://localhost:4000/invoices/new`)
+      const data = await res.json()
+      setData(data)
+    } catch (err) {
+      console.error("Error fetching invoices:", err)
+      setData([])
+    }
+  }
+
+  const fetchInvoices = async () => {
+    try {
+      const res = await fetch(`http://localhost:4000/invoice/complete/${Vno}`)
+      const data = await res.json()
+      setData(data)
+    } catch (err) {
+      console.error("Error fetching invoices:", err)
+      setData([])
+    }
+  }
+
+  const syncInvoices = async () => {
+    try {
+      const res = await fetch(`http://localhost:4000/invoice/insert/${Vno}`)
+      const data = await res.json()
+      setMsg(data.message)
+      setOpen(true)
+    } catch (err) {
+      console.error("Error fetching invoices:", err)
+      setData([])
+    }
+  }
+
+  useEffect(() => {
+    fetchNewInvoices()
+  }, [])
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className='p-2 w-full my-4 space-y-4'>
+      <section className='w-full flex border rounded-2xl p-4 items-center justify-between'>
+        <h5>Today's Activity</h5>
+
+        <div className='flex gap-4 items-center'>
+
+          <Field>
+            
+            <Input 
+            id="Vno" 
+            type="text"
+            value={Vno}
+            placeholder="Vno"
+            className='max-w-40 h-8 border-primary/50 border-2'
+            onChange={(e)=>{setVno(e.target.value)}}
+            />
+          </Field>
+          <Button onClick={fetchInvoices}>Fetch</Button>
+          
+          <Button onClick={() => syncInvoices()}>
+            <RefreshCcw /> Sync Live
+          </Button>
+
+          <Link className="flex items-center gap-1 bg-primary py-1 px-3 rounded-full text-white" to="/discrepancy">
+            <PenLine size={16} />
+            Discrepancy
+          </Link>
+
+          {/* <Button onClick={() => fetchInvoices()}>
+            <RefreshCcw /> Refresh
+          </Button> */}
+
         </div>
-        <div>
-          <h1 className='text-amber-600'>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+
       </section>
 
-      <div className="ticks"></div>
+      <section className="rounded-2xl">
+        <div className="flex items-center justify-between">
+          <h5 className="text-xl m-4 font-semibold tracking-tight">
+            Pending Bills {data.length}
+          </h5>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+
+        <div className="rounded-xl bg-card px-4 pb-4">
+
+          <DataTable data={data || []} columns={columns} />
+
         </div>
       </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            
+          </AlertDialogTitle>
+        </AlertDialogHeader>
+        <AlertDialogContent className='rounded-md border-2 border-gray-700/50 bg-gray-100'>
+          <AlertDialogHeader>
+            <p className='text-2xl font-semibold'>
+              Alert
+            </p>
+            {/* <AlertDialogTitle className='text-black'>Alert</AlertDialogTitle> */}
+            <AlertDialogDescription className='text-gray-700 font-semibold'>
+              {msg}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction className='rounded-lg'>Close</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+    </div>
   )
 }
 
-export default App
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Use your existing home directly */}
+        <Route path="/" element={<Home />} />
+
+        {/* Add only this new page */}
+        <Route path="/discrepancy" element={<Discrepancy />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
