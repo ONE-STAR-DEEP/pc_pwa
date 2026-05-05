@@ -94,10 +94,11 @@ export const columns: ColumnDef<Invoice>[] = [
         header: "Action",
         size: 120,
         cell: ({ row }) => {
-            const value = row.original.Vno;
+            const VNo = row.original.Vno;
+            const Vtyp = row.original.Vtyp;
             return (
                 <div className="flex items-center m-0">
-                    <DiscrepancyPopup VNo={value} />
+                    <DiscrepancyPopup VNo={VNo} Vtyp={Vtyp}/>
                 </div>
             )
         },

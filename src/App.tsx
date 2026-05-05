@@ -25,7 +25,7 @@ function Home() {
   const [data, setData] = useState<Invoice[]>([])
   const [open, setOpen] = useState(false)
   const [msg, setMsg] = useState("")
-  const [Vno, setVno] = useState("")
+  const [VtypVno, setVtypVno] = useState("")
 
   const fetchNewInvoices = async () => {
     try {
@@ -40,7 +40,7 @@ function Home() {
 
   const fetchInvoices = async () => {
     try {
-      const res = await fetch(`http://localhost:4000/invoice/complete/${Vno}`)
+      const res = await fetch(`http://localhost:4000/invoice/complete/${VtypVno}`)
       const data = await res.json()
       setData(data)
     } catch (err) {
@@ -51,7 +51,7 @@ function Home() {
 
   const syncInvoices = async () => {
     try {
-      const res = await fetch(`http://localhost:4000/invoice/insert/${Vno}`)
+      const res = await fetch(`http://localhost:4000/invoice/insert/${VtypVno}`)
       const data = await res.json()
       setMsg(data.message)
       setOpen(true)
@@ -75,12 +75,12 @@ function Home() {
           <Field>
             
             <Input 
-            id="Vno" 
+            id="VtypVno" 
             type="text"
-            value={Vno}
-            placeholder="Vno"
+            value={VtypVno}
+            placeholder="Vtyp-Vno"
             className='max-w-40 h-8 border-primary/50 border-2'
-            onChange={(e)=>{setVno(e.target.value)}}
+            onChange={(e)=>{setVtypVno(e.target.value)}}
             />
           </Field>
           <Button onClick={fetchInvoices}>Fetch</Button>

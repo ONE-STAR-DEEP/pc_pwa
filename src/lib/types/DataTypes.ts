@@ -24,6 +24,7 @@ export interface Invoice {
   discrepancy: string;
   status: string;
   recipt: string;
+  Vtyp: string;
 }
 
 export type BillItem = {
@@ -40,4 +41,6 @@ export type BillItem = {
   "DIS%": string;
   Tax: string;
   old_Qty?: number
+  old_batch_no?: string
+  old_expiry?: string
 };

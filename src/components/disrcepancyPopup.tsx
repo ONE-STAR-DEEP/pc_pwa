@@ -27,7 +27,7 @@ import type { BillItem, Invoice } from "@/lib/types/DataTypes"
 import { useEffect, useState } from 'react'
 import Loader from "./Loader"
 
-const DiscrepancyPopup = ({ VNo }: { VNo: string }) => {
+const DiscrepancyPopup = ({ VNo, Vtyp }: { VNo: string, Vtyp: string }) => {
 
   const [open, setOpen] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
@@ -54,7 +54,7 @@ const DiscrepancyPopup = ({ VNo }: { VNo: string }) => {
 
   const fetchdata = async () => {
     try {
-      const res = await fetch(`http://localhost:4000/discrepancyInvoice/Vno/${VNo}`);
+      const res = await fetch(`http://localhost:4000/discrepancyInvoice/Vno/${Vtyp}-${VNo}`);
       return await res.json();
     } catch (error) {
       console.error("Error fetching invoice items:", error);
@@ -67,6 +67,7 @@ const DiscrepancyPopup = ({ VNo }: { VNo: string }) => {
       if (!open) return;
       try {
         const res = await fetchdata();
+        console.log(res)
 
         if (!res.success) {
           alert("Failed to fetch data Try Again");
@@ -102,12 +103,12 @@ const DiscrepancyPopup = ({ VNo }: { VNo: string }) => {
                     "
           >
             <DialogHeader>
-                <DialogTitle>
-                  <p className='text-xl font-semibold text-primary'></p>
-                </DialogTitle>
-                </DialogHeader>
+              <DialogTitle>
+                <p className='text-xl font-semibold text-primary'></p>
+              </DialogTitle>
+            </DialogHeader>
 
-                <Loader/>
+            <Loader />
 
           </DialogContent>
           :
@@ -136,30 +137,30 @@ const DiscrepancyPopup = ({ VNo }: { VNo: string }) => {
                 <h5 className='text-lg font-semibold mt-2'>Invoice No: <span className='text-orange-600'>{invoice?.['Bill No']}</span></h5>
               </DialogHeader>
 
-              <FieldGroup className="gap-1">
-                <div className="grid grid-cols-[40px_100px_1fr_100px_100px] gap-1 mb-2">
+              <FieldGroup >
+                <div className="grid grid-cols-[40px_150px_1fr_100px_100px_150px] gap-4 mb-0">
                   <Label>SNo</Label>
-                  <Label>HSN</Label>
-                  <Label>Particular</Label>
-                  <Label>Original Qty</Label>
+                  <Label>Batch No.</Label>
+                  <Label className='min-w-60'>Particular</Label>
                   <Label>Current Qty</Label>
+                  <Label>Changed to</Label>
+                  <Label>Expiry</Label>
                 </div>
 
                 {data?.map((item, index) => (
-                  <div key={item.id} className="grid grid-cols-[40px_100px_1fr_100px_100px] gap-1 mb-0 space-y-0 gap-y-0">
+                  <div key={item.id} className="grid grid-cols-[40px_150px_1fr_100px_100px_150px] gap-4 mb-0">
 
                     <Input
-                      name="hsn"
+                      name="Sno"
                       defaultValue={index + 1}
                       disabled
-                      className="rounded-sm border border-black/20 h-8 m-0 "
                     />
                     <Field>
                       <Input
-                        name="hsn"
-                        defaultValue={item["HSN CODE"]}
+                        name="batch"
+                        defaultValue={item['Batch No.']}
+                        className={`${(item.old_batch_no !== null) && (item['Batch No.'] !== item.old_batch_no) ? "bg-red-300 text-black" : ""}`}
                         disabled
-                        className="rounded-sm border border-black/20  h-8 m-0 "
                       />
                     </Field>
 
@@ -168,7 +169,6 @@ const DiscrepancyPopup = ({ VNo }: { VNo: string }) => {
                         name="particular"
                         defaultValue={item.PARTICULARS}
                         disabled
-                        className="rounded-sm border border-black/20  h-8 m-0 "
                       />
                     </Field>
 
@@ -177,7 +177,6 @@ const DiscrepancyPopup = ({ VNo }: { VNo: string }) => {
                         name="particular"
                         defaultValue={item.old_Qty ? item.old_Qty : "Unaltered"}
                         disabled
-                        className="rounded-sm border border-black/20  h-8 m-0 "
                       />
                     </Field>
 
@@ -186,19 +185,27 @@ const DiscrepancyPopup = ({ VNo }: { VNo: string }) => {
                         name="qty"
                         defaultValue={item.Qty}
                         disabled
-                        className={`${item.Qty !== item.old_Qty ? "bg-red-300 text-black" : ""} rounded-sm border border-black/20 h-8 m-0 `}
+                        className={`${(item.old_Qty !== null) && (item.Qty !== item.old_Qty) ? "bg-red-300 text-black" : ""}`}
+                      />
+                    </Field>
+
+                    <Field>
+                      <Input
+                        name="expiry"
+                        defaultValue={item['Exp.']}
+                        disabled
+                        className={`${(item.old_expiry !== null) && (item['Exp.'] !== item.old_expiry) ? "bg-red-300 text-black" : ""}`}
                       />
                     </Field>
                   </div>
                 ))}
-
-
               </FieldGroup>
+
               <DialogFooter className=''>
                 <DialogClose asChild>
-                  <Button variant="outline" className="rounded-sm border border-black/20" type="button">Close</Button>
+                  <Button variant="outline" className="rounded-full border border-black/20" type="button">Close</Button>
                 </DialogClose>
-                <Button className="rounded-sm border border-black/20" onClick={() => { setAlertOpen(true) }} type="button">Resolved</Button>
+                <Button className="rounded-full border border-black/20" onClick={() => { setAlertOpen(true) }} type="button">Resolved</Button>
               </DialogFooter>
             </form>
           </DialogContent>
